@@ -1,0 +1,232 @@
+{% load custom_tag %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>五洲集团销售报价管理</title>
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- basic styles -->
+		<link href="{{ STATIC_URL }}assets/css/bootstrap.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/font-awesome.min.css" />
+
+		<!--[if IE 7]>
+		  <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/font-awesome-ie7.min.css" />
+		<![endif]-->
+
+		<!-- page specific plugin styles -->
+        {% block pagestyle %}
+
+        {% endblock pagestyle %}
+		<!-- fonts -->
+
+		<!--<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" />-->
+
+		<!-- ace styles -->
+
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/ace.min.css" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/ace-rtl.min.css" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/ace-skins.min.css" />
+
+		<!--[if lte IE 8]>
+		  <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+
+		<script src="{{ STATIC_URL }}assets/js/ace-extra.min.js"></script>
+
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+		<!--[if lt IE 9]>
+		<script src="{{ STATIC_URL }}assets/js/html5shiv.js"></script>
+		<script src="{{ STATIC_URL }}assets/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+		<div class="navbar navbar-default" id="navbar">
+			<script type="text/javascript">
+				try{ace.settings.check('navbar' , 'fixed')}catch(e){}
+			</script>
+
+			<div class="navbar-container" id="navbar-container">
+				<div class="navbar-header pull-left">
+					<a href="#" class="navbar-brand">
+						<small>
+							<i class="icon-leaf"></i>
+							五洲集团销售报价管理
+						</small>
+					</a><!-- /.brand -->
+				</div><!-- /.navbar-header -->
+
+				<div class="navbar-header pull-right" role="navigation">
+					<ul class="nav ace-nav">
+						<li class="light-blue">
+							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+								<img class="nav-user-photo" src="{{ STATIC_URL }}assets/avatars/user.jpg" alt="Jason's Photo" />
+								<span class="user-info">
+									<small>欢迎光临,</small>
+                                    {{ request.session.username }}
+								</span>
+
+								<i class="icon-caret-down"></i>
+							</a>
+
+							<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+								<li>
+									<a href="#">
+										<i class="icon-cog"></i>
+										设置
+									</a>
+								</li>
+
+								<li>
+									<a href="#">
+										<i class="icon-user"></i>
+										个人资料
+									</a>
+								</li>
+
+								<li class="divider"></li>
+
+								<li>
+									<a href="/rbac/logout/">
+										<i class="icon-off"></i>
+										退出
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul><!-- /.ace-nav -->
+				</div><!-- /.navbar-header -->
+			</div><!-- /.container -->
+		</div>
+
+        <!--main-container start-->
+		<div class="main-container" id="main-container">
+			<script type="text/javascript">
+				try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+			</script>
+
+            <!--main-container-inner start-->
+			<div class="main-container-inner">
+				<a class="menu-toggler" id="menu-toggler" href="#">
+					<span class="menu-text"></span>
+				</a>
+
+				<div class="sidebar" id="sidebar">
+					<script type="text/javascript">
+						try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
+					</script>
+
+					<div class="sidebar-shortcuts" id="sidebar-shortcuts">
+						<div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+							<button class="btn btn-success">
+								<i class="icon-signal"></i>
+							</button>
+
+							<button class="btn btn-info">
+								<i class="icon-pencil"></i>
+							</button>
+
+							<button class="btn btn-warning">
+								<i class="icon-group"></i>
+							</button>
+
+							<button class="btn btn-danger">
+								<i class="icon-cogs"></i>
+							</button>
+						</div>
+
+						<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+							<span class="btn btn-success"></span>
+
+							<span class="btn btn-info"></span>
+
+							<span class="btn btn-warning"></span>
+
+							<span class="btn btn-danger"></span>
+						</div>
+					</div><!-- #sidebar-shortcuts -->
+
+					<ul class="nav nav-list">
+                        {% rbac_menu request %}
+					</ul><!-- /.nav-list -->
+                    <div class="sidebar-collapse" id="sidebar-collapse">
+						<i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i>
+					</div>
+                </div>
+
+                <div class="main-content">
+                    <!-- page-content start -->
+                    <!--<div class="page-content">-->
+                        {% block context %}
+
+                        {% endblock context %}
+                    <!--</div>-->
+                    <!-- page-content end -->
+                </div><!--.main-content end-->
+            </div><!--.main-container-inner end-->
+        </div><!--main-container end-->
+
+		<!-- basic scripts -->
+		<!--[if !IE]> -->
+
+		<script src="{{ STATIC_URL }}assets/js/jquery-2.0.3.min.js"></script>
+        <script src="{{ STATIC_URL }}layer/layer.js"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+        <script src="{{ STATIC_URL }}assets/js/jquery-1.10.2.min.js"></script>
+        <![endif]-->
+
+		<!--[if !IE]> -->
+
+		<script type="text/javascript">
+			window.jQuery || document.write("<script src='{{ STATIC_URL }}assets/js/jquery-2.0.3.min.js'>"+"<"+"script>");
+		</script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+            <script type="text/javascript">
+             window.jQuery || document.write("<script src='{{ STATIC_URL }}assets/js/jquery-1.10.2.min.js'>"+"<"+"script>");
+            </script>
+        <![endif]-->
+
+		<script type="text/javascript">
+			if("ontouchend" in document) document.write("<script src='{{ STATIC_URL }}assets/js/jquery.mobile.custom.min.js'>"+"<"+"script>");
+		</script>
+		<script src="{{ STATIC_URL }}assets/js/bootstrap.min.js"></script>
+		<script src="{{ STATIC_URL }}assets/js/typeahead-bs2.min.js"></script>
+
+		<!-- page specific plugin scripts -->
+            <!-- page specific plugin scripts start -->
+                {% block pagescript %}
+
+                {% endblock pagescript %}
+            <!-- page specific plugin scripts end -->
+		<!--[if lte IE 8]>
+		  <script src="assets/js/excanvas.min.js"></script>
+		<![endif]-->
+
+		<script src="{{ STATIC_URL }}assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+		<script src="{{ STATIC_URL }}assets/js/jquery.ui.touch-punch.min.js"></script>
+		<script src="{{ STATIC_URL }}assets/js/jquery.slimscroll.min.js"></script>
+		<script src="{{ STATIC_URL }}assets/js/jquery.easy-pie-chart.min.js"></script>
+		<script src="{{ STATIC_URL }}assets/js/jquery.sparkline.min.js"></script>
+		<script src="{{ STATIC_URL }}assets/js/flot/jquery.flot.min.js"></script>
+		<script src="{{ STATIC_URL }}assets/js/flot/jquery.flot.pie.min.js"></script>
+		<script src="{{ STATIC_URL }}assets/js/flot/jquery.flot.resize.min.js"></script>
+
+		<!-- ace scripts -->
+		<script src="{{ STATIC_URL }}assets/js/ace-elements.min.js"></script>
+		<script src="{{ STATIC_URL }}assets/js/ace.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!--车辆信息列表-->
+{% extends "rbac/base.html" %}
+
+<!--页面所需css-->
+{% block pagestyle %}
+        <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/jquery-ui-1.10.3.custom.min.css" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/chosen.css" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/datepicker.css" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/bootstrap-timepicker.css" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/daterangepicker.css" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/colorpicker.css" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/wz-css.css" />
+{% endblock pagestyle %}
+
+<!--内容-->
+{% block context %}
+<div class="breadcrumbs" id="breadcrumbs"><!--breadcrumbs start-->
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+    </script>
+
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="/wzjt/index/">首页</a>
+        </li>
+        <li class="active">库存列表</li>
+    </ul><!-- .breadcrumb -->
+
+    <div class="nav-search" id="nav-search">
+        <form class="form-search">
+            <span class="input-icon">
+                <input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+                <i class="icon-search nav-search-icon"></i>
+            </span>
+        </form>
+    </div><!-- #nav-search -->
+</div>
+
+<div class="page-content">
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- PAGE CONTENT BEGINS -->
+            <!--查询条件div-->
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="widget-box">
+                        <a href="#" data-action="collapse">
+                            <div class="widget-header">
+                                <h5>查询条件</h5>
+                                <span class="widget-toolbar">
+                                    <i class="icon-chevron-up"></i>
+                                </span>
+                            </div>
+                        </a>
+
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label class="col-xs-3 control-label no-padding-right"> 车辆VIN </label>
+                                            <div class="col-xs-9">
+                                                <input type="text" id="cx_vin" placeholder="车辆vin" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <label class="col-xs-3 control-label"> 车辆状态 </label>
+                                        <div class="col-xs-9">
+                                            <select type="text" id="cx_status">
+                                                <option value=""></option>
+                                                <option value="0">待售</option>
+                                                <option value="1">已售</option>
+                                                <option value="2">审批中</option>
+                                            </select>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row center">
+                                    <hr>
+                                    <button class="btn btn-sm" id="cx_reset" type="button">
+                                        <i class="icon-undo bigger-110"></i>
+                                        重置
+                                    </button>
+                                    &nbsp; &nbsp; &nbsp;
+                                    <button class="btn btn-sm btn-info" id="cx_submit" type="button">
+                                        <i class=" icon-search bigger-110"></i>
+                                        查询
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--查询条件div end-->
+
+            <!--dataTables页面-->
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="table-header">
+                        查询列表
+                    </div>
+                    <div class="table-responsive">
+                        <table id="vehicle_table" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="center">
+                                        <input type="checkbox" class="icheckbox_minimal" id="all_checked">
+                                    </th>
+                                    <th>序号</th>
+                                    <th>车辆VIN</th>
+                                    <th class="hidden-480">六位码</th>
+
+                                    <th>
+                                        <i class="icon-time bigger-110 hidden-480"></i>
+                                        车型
+                                    </th>
+
+                                    <th>
+                                        <i class="icon-money bigger-110 hidden-480"></i>
+                                        指导价
+                                    </th>
+
+                                    <th>
+                                        <i class="icon-flag bigger-110 hidden-480"></i>
+                                        状态
+                                    </th>
+
+                                    <th>
+                                        <i class="icon-time bigger-110 hidden-480"></i>
+                                        入库日期
+                                    </th>
+
+                                    <th>
+                                        备注
+                                    </th>
+
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="toolbar">12121212</div>-->
+             <!--dataTables页面 end-->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+</div><!-- /.page-content -->
+
+
+    <!--修改车辆Modal-->
+    <div id="modal-edit" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="blue bigger">车辆详情</h5>
+                </div><!-- /.modal-header -->
+
+                <div class="modal-body overflow-visible">
+                    <div class="row">
+                        <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+                            <form id="edit_vehicle_form" class="form-horizontal" role="form">
+                                <div class="form-group hidden">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 车辆id </label>
+
+                                    <div class="col-sm-9">
+                                        <input disabled  type="text" id="id" class="col-xs-10 col-sm-7" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right"> 车辆VIN </label>
+
+                                    <div class="col-sm-9">
+                                        <input disabled type="text" id="vin" placeholder="车辆VIN" class="col-xs-10 col-sm-7" />
+                                    </div>
+                                </div>
+
+                                <div class="space-4"></div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right"> 车型 </label>
+
+                                    <div class="col-sm-9">
+                                        <input type="text" id="vehicle_type" placeholder="车型" class="col-xs-10 col-sm-7" />
+                                    </div>
+                                </div>
+
+                                <div class="space-4"></div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="last_name"> 六位码 </label>
+
+                                    <div class="col-sm-9">
+                                        <input disabled type="text" id="six_yards" class="col-xs-10 col-sm-7" placeholder="六位码"  />
+                                    </div>
+                                </div>
+
+                                <div class="space-4"></div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-3"> 指导价 </label>
+
+                                    <div class="col-sm-9">
+                                        <input type="tel" id="guidance_price" class="col-xs-10 col-sm-7 onlyNum" placeholder="指导价"  />
+                                    </div>
+                                </div>
+
+                                <div class="space-4"></div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-4">所属部门</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control dep_select" id="dep_select">
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="space-4"></div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right"> 入库日期 </label>
+
+                                    <div class="col-sm-9">
+                                        <input disabled type="text" id="storage_date" class="col-xs-10 col-sm-7" />
+                                    </div>
+                                </div>
+
+                                <div class="space-4"></div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right"> 销售日期 </label>
+
+                                    <div class="col-sm-9">
+                                        <input disabled type="text" id="out_date" class="col-xs-10 col-sm-7" />
+                                    </div>
+                                </div>
+
+                                <div class="space-4"></div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-4">备注</label>
+                                    <div class="col-sm-7">
+                                        <textarea class="form-control limited" id="remarks" maxlength="50"></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div><!-- /.col -->
+                    </div>
+                </div>
+
+                <div class="modal-footer form-actions">
+                    <div class="col-md-offset-3 col-md-9">
+                        <button class="btn btn-sm btn-primary" type="button" id="submit_edit_vehicle">
+                            <i class="icon-ok bigger-110"></i>
+                            提交
+                        </button>
+
+                        <button class="btn btn-sm" data-dismiss="modal">
+                            <i class="icon-remove"></i>
+                            取消
+                        </button>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- PAGE CONTENT ENDS -->
+    <!--增加车辆Modal-->
+    <div id="modal-add" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="blue bigger">增加车辆信息</h4>
+                </div><!-- /.modal-header -->
+
+                <div class="modal-body overflow-visible">
+                    <div class="row">
+                        <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+                            <form id="add_vehicle_form" class="form-horizontal" role="form">
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right"> 车辆VIN </label>
+
+                                    <div class="col-sm-9">
+                                        <input type="text" id="add_vin" name="add_vin" placeholder="车辆VIN"  class="col-xs-10 col-sm-7" />
+                                    </div>
+                                </div>
+
+                                <div class="space-4"></div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right"> 车型 </label>
+
+                                    <div class="col-sm-9">
+                                        <input type="text" id="add_vehicle_type" name="add_vehicle_type" placeholder="车型" class="col-xs-10 col-sm-7" />
+                                    </div>
+                                </div>
+
+                                <div class="space-4"></div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="last_name"> 六位码 </label>
+
+                                    <div class="col-sm-9">
+                                        <input disabled type="text" id="add_six_yards" name="add_six_yards" class="col-xs-10 col-sm-7" placeholder="六位码"  />
+                                    </div>
+                                </div>
+
+                                <div class="space-4"></div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-3"> 指导价 </label>
+
+                                    <div class="col-sm-9">
+                                        <input type="tel" id="add_guidance_price" name="add_guidance_price" class="col-xs-10 col-sm-7 onlyNum" value="0.00"/>
+                                    </div>
+                                </div>
+
+                                <div class="space-4"></div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-4">所属部门</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control dep_select" name="add_dep_select" id="add_dep_select">
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="space-4"></div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-4">备注</label>
+                                    <div class="col-sm-7">
+                                        <textarea class="form-control limited" id="add_remarks" name="add_remarks" maxlength="50"></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div><!-- /.col -->
+                    </div>
+                </div>
+
+                <div class="modal-footer form-actions">
+                    <div class="col-md-offset-3 col-md-9">
+
+                        <button class="btn btn-sm btn-primary" type="button" id="submit_add_vehicle">
+                            <i class="icon-ok bigger-110"></i>
+                            提交
+                        </button>
+
+                        <button class="btn btn-sm" data-dismiss="modal">
+                            <i class="icon-remove"></i>
+                            取消
+                        </button>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- PAGE CONTENT ENDS -->
+
+{% endblock context %}
+
+
+<!-- page specific plugin scripts -->
+{% block pagescript %}
+
+    <script src="{{ STATIC_URL }}assets/js/jquery.dataTables.min.js"></script>
+    <script src="{{ STATIC_URL }}assets/js/jquery.dataTables.bootstrap.js"></script>
+    <script src="{{ STATIC_URL }}assets/js/jquery.validate.min.js"></script>
+    <script src="{{ STATIC_URL }}assets/js/messages_zh.js"></script>
+    <!--页面js-->
+    <script src="{{ STATIC_URL }}wzjs/vehicle.js"></script>
+    <script src="{{ STATIC_URL }}wzjs/wz-input-control.js"></script>
+
+{% endblock pagescript%}

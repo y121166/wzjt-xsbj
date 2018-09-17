@@ -1,0 +1,466 @@
+{% extends "rbac/base.html" %}
+
+{% block pagestyle %}
+        <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/jquery-ui-1.10.3.custom.min.css" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/chosen.css" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/datepicker.css" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/bootstrap-timepicker.css" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/daterangepicker.css" />
+		<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/colorpicker.css" />
+{% endblock pagestyle %}
+
+{% block context %}
+<div class="breadcrumbs" id="breadcrumbs"><!--breadcrumbs start-->
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+    </script>
+
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">系统管理</a>
+        </li>
+        <li class="active">部门列表</li>
+    </ul><!-- .breadcrumb -->
+
+    <div class="nav-search" id="nav-search">
+        <form class="form-search">
+            <span class="input-icon">
+                <input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+                <i class="icon-search nav-search-icon"></i>
+            </span>
+        </form>
+    </div><!-- #nav-search -->
+</div>
+
+<div class="page-content">
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- PAGE CONTENT BEGINS -->
+            <!--查询条件div-->
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="widget-box">
+                        <a href="#" data-action="collapse">
+                            <div class="widget-header">
+                                <h5>查询条件</h5>
+                                <span class="widget-toolbar">
+                                    <i class="icon-chevron-up"></i>
+                                </span>
+                            </div>
+                        </a>
+
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label class="col-xs-3 control-label no-padding-right"> 部门名称</label>
+                                            <div class="col-xs-9">
+                                                <input type="text" id="cx_dep_name" placeholder="部门名称" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row center">
+                                    <hr>
+                                    <button class="btn btn-sm" id="cx_reset" type="button">
+                                        <i class="icon-undo bigger-110"></i>
+                                        重置
+                                    </button>
+                                    &nbsp; &nbsp; &nbsp;
+                                    <button class="btn btn-sm btn-info" id="cx_submit" type="button">
+                                        <i class=" icon-search bigger-110"></i>
+                                        查询
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--查询条件div end-->
+
+            <!--列表-->
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="table-header">
+                        部门列表
+                    </div>
+                    <div class="table-responsive">
+                        <table id="sample-table-2" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="center">
+                                        <label>
+                                            <input type="checkbox" class="ace" />
+                                            <span class="lbl"></span>
+                                        </label>
+                                    </th>
+                                    <th>部门ID</th>
+                                    <th class="hidden-480">部门名称</th>
+                                    <th class="hidden-480">部门简写</th>
+
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for dep in dep_list %}
+                                    <tr>
+                                        <td class="center"> <!--check框-->
+                                            <label>
+                                            <input type="checkbox" class="ace" />
+                                            <span class="lbl"></span>
+                                        </label>
+                                        </td>
+                                        <td><!--部门ID-->
+                                            <a href="#">{{ dep.id}}</a>
+                                        </td>
+                                        <td class="hidden-480">{{ dep.title }}</td><!--部门名称-->
+                                        <td class="hidden-480">{{ dep.dep_code }}</td><!--部门名称-->
+
+                                        <td><!--操作-->
+                                            <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+                                                <a class="blue" href="#modal-add" data-toggle="modal" name="dep_add" >
+                                                    <i class="icon-zoom-in bigger-130"></i>
+                                                </a>
+
+                                                <a class="green" href="#modal-edit" data-toggle="modal" id = "dep_view-{{ dep.id }}" name="dep_view" >
+                                                    <i class="icon-pencil bigger-130"></i>
+                                                </a>
+
+                                                <a class="red" href="#" id="dep_del-{{ dep.id }}" name="dep_del">
+                                                    <i class="icon-trash bigger-130"></i>
+                                                </a>
+                                            </div>
+
+                                            <div class="visible-xs visible-sm hidden-md hidden-lg">
+                                                <div class="inline position-relative">
+                                                    <button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown">
+                                                        <i class="icon-caret-down icon-only bigger-120"></i>
+                                                    </button>
+
+                                                    <ul class="dropdown-menu dropdown-only-icon dropdown-yellow pull-right dropdown-caret dropdown-close">
+                                                        <li>
+                                                            <a href="#" class="tooltip-info" data-rel="tooltip" title="View">
+                                                                <span class="blue">
+                                                                    <i class="icon-zoom-in bigger-120"></i>
+                                                                </span>
+                                                            </a>
+                                                        </li>
+
+                                                        <li>
+                                                            <a href="#" class="tooltip-success" data-rel="tooltip" title="Edit">
+                                                                <span class="green">
+                                                                    <i class="icon-edit bigger-120"></i>
+                                                                </span>
+                                                            </a>
+                                                        </li>
+
+                                                        <li>
+                                                            <a href="#" class="tooltip-error" data-rel="tooltip" title="Delete">
+                                                                <span class="red">
+                                                                    <i class="icon-trash bigger-120"></i>
+                                                                </span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- PAGE CONTENT ENDS -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+</div><!-- /.page-content -->
+
+    <!--修改部门Modal-->
+    <div id="modal-edit" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="blue bigger">部门详情</h4>
+                </div><!-- /.modal-header -->
+
+                <div class="modal-body overflow-visible">
+                    <div class="row">
+                        <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+
+                            <form id="user_form" class="form-horizontal" role="form">
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 部门ID </label>
+
+                                    <div class="col-sm-9">
+                                        <input readonly="" type="text" id="dep_id" placeholder="部门ID" class="col-xs-10 col-sm-5" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-3"> 部门名称 </label>
+
+                                    <div class="col-sm-9">
+                                        <input type="text" class="col-xs-10 col-sm-5" placeholder="部门名称" id="dep_name" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-3"> 部门简写 </label>
+
+                                    <div class="col-sm-9">
+                                        <input disabled type="text" class="col-xs-10 col-sm-5" placeholder="部门简写" id="dep_code" />
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer form-actions">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button class="btn btn-sm btn-primary" type="button" onclick="submit_dep()">
+                                            <i class="icon-ok bigger-110"></i>
+                                            提交
+                                        </button>
+
+                                        <button class="btn btn-sm" data-dismiss="modal">
+                                            <i class="icon-remove"></i>
+                                            取消
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div><!-- /.col -->
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- PAGE CONTENT ENDS -->
+
+
+    <!--增加部门Modal-->
+    <div id="modal-add" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="blue bigger">增加部门</h4>
+                </div><!-- /.modal-header -->
+
+                <div class="modal-body overflow-visible">
+                    <div class="row">
+                        <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+
+                            <form id="user_form" class="form-horizontal" role="form">
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-3"> 部门名称 </label>
+
+                                    <div class="col-sm-9">
+                                        <input type="text" class="col-xs-10 col-sm-5" placeholder="部门名称" id="add_dep_name" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-3"> 部门简写 </label>
+
+                                    <div class="col-sm-9">
+                                        <input type="text" class="col-xs-10 col-sm-5" placeholder="部门简写" id="add_dep_code" />
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer form-actions">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button class="btn btn-sm btn-primary" type="button" onclick="submit_add_dep()">
+                                            <i class="icon-ok bigger-110"></i>
+                                            提交
+                                        </button>
+
+                                        <button class="btn btn-sm" data-dismiss="modal">
+                                            <i class="icon-remove"></i>
+                                            取消
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div><!-- /.col -->
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- PAGE CONTENT ENDS -->
+
+{% endblock context %}
+<!-- page specific plugin scripts -->
+{% block pagescript %}
+    <script src="{{ STATIC_URL }}assets/js/jquery.dataTables.min.js"></script>
+    <script src="{{ STATIC_URL }}assets/js/jquery.dataTables.bootstrap.js"></script>
+    <!-- inline scripts related to this page -->
+    <script type="text/javascript">
+        //部门删除事件
+        function submit_del_dep(){
+            var id = $("#username_id").val();
+            var username = $("#username_form").val();
+            var last_name = $("#last_name").val();
+            var dep_select = $("#dep_select").val();
+            var roles_select = $("#roles_select").val();
+            //console.log(username,last_name,dep_select,roles_select)
+            $.ajax({
+                url:"/rbac/user_Edit/",
+                type:"POST",
+                dataType:'json',
+                data:{"id":id,"username":username,"last_name":last_name,"dep_select":dep_select,"roles_select":roles_select},
+                async:false,
+                success:function (data,status) {
+                    layer.msg('用户修改成功!');
+                    setTimeout(function(){window.location.reload()}, 100);
+                },
+                fail:function (err,status) {
+                    alert("用户修改失败！");
+                    console.log(err);
+                },
+            });
+        }
+        //部门修改事件
+        function submit_dep(){
+            var id = $("#dep_id").val();
+            var title = $("#dep_name").val();
+            //console.log(username,last_name,dep_select,roles_select)
+            $.ajax({
+                url:"/rbac/dep_edit/",
+                type:"POST",
+                dataType:'json',
+                data:{"id":id,"title":title},
+                async:false,
+                beforeSend:function(){
+                    var index = layer.load(1,{shade:false});
+                },
+                success:function (data,status) {
+                    layer.close(layer.index);
+                    setTimeout(function(){layer.msg('提交成功!');}, 100);
+                    window.location.reload()
+                },
+                fail:function (err,status) {
+                    layer.close(layer.index);
+                    setTimeout(function(){layer.msg('提交失败!');}, 100);
+                    console.log(err);
+                },
+            });
+        }
+
+        //部门添加事件
+        function submit_add_dep(){
+            var title = $("#add_dep_name").val();
+            var dep_code = $("#add_dep_code").val();
+            //console.log(username,last_name,dep_select,roles_select)
+            $.ajax({
+                url:"/rbac/dep/",
+                type:"POST",
+                dataType:'json',
+                data:{"title":title,"dep_code":dep_code},
+                async:false,
+                beforeSend:function(){
+                    var index = layer.load(1,{shade:false});
+                },
+                success:function (data,status) {
+                    layer.close(layer.index);
+                    setTimeout(function(){layer.msg('提交成功!');}, 100);
+                    window.location.reload()
+                },
+                fail:function (err,status) {
+                    layer.close(layer.index);
+                    setTimeout(function(){layer.msg('提交失败!');}, 100);
+                    console.log(err);
+                },
+            });
+        }
+
+        jQuery(function($) {
+
+            //添加删除事件
+            $("a[name='dep_del']").click(function () {
+                id = this.id;
+                layer.confirm("确定要删除此条数据吗？",{btn:['确认','取消']
+                    },function () {
+                        //console.log(id);
+                        $.ajax({
+                            url:"/rbac/"+ id,
+                            async:false,
+                            beforeSend:function(){
+                            var index = layer.load(1,{shade:false});
+                            },
+                            success:function (data,status) {
+                                layer.close(layer.index);
+                                if(data.result === "Success"){
+                                    setTimeout(function(){layer.msg('删除成功!');}, 100);
+                                }else {
+                                    setTimeout(function(){layer.msg('删除失败!');}, 100);
+                                }
+                                window.location.reload();
+                            },
+                        });
+                    },function () {
+                        layer.close(layer.index);
+                    });
+                });
+
+            //获取部门详情
+            $("a[name='dep_view']").click(function () {
+                $.get("/rbac/"+this.id,function (data){
+                    var dep_info = eval(data.dep_info);
+                    //console.log(dep_info);
+                    $.each(dep_info,function (i , item) {
+                        $("#dep_id").attr("value",item.id);
+                        $("#dep_name").attr("value",item.title);
+                        $("#dep_code").attr("value",item.dep_code);
+                    });
+                });
+            });
+
+            var oTable1 = $('#sample-table-2').dataTable( {
+                "bAutoWidth":false,
+                "aoColumns": [
+                    { "bSortable": false },
+                    null,
+                    null,
+                    null,
+                    { "bSortable": false }
+                ],
+            } );
+
+            $('table th input:checkbox').on('click' , function(){
+                var that = this;
+                $(this).closest('table').find('tr > td:first-child input:checkbox')
+                .each(function(){
+                    this.checked = that.checked;
+                    $(this).closest('tr').toggleClass('selected');
+                });
+
+            });
+
+            $('[data-rel="tooltip"]').tooltip({placement: tooltip_placement});
+            function tooltip_placement(context, source) {
+                var $source = $(source);
+                var $parent = $source.closest('table');
+                var off1 = $parent.offset();
+                var w1 = $parent.width();
+
+                var off2 = $source.offset();
+                var w2 = $source.width();
+
+                if( parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2) ) return 'right';
+                return 'left';
+            }
+        })
+    </script>
+{% endblock pagescript%}

@@ -1,0 +1,4 @@
+DEBUG 2018-08-23 08:08:27,408 D:\wz_xsqd\venv\lib\site-packages\django\db\backends\utils.py utils.py utils execute 111: (0.000) SELECT @@SQL_AUTO_IS_NULL; args=None
+DEBUG 2018-08-23 08:08:27,409 D:\wz_xsqd\venv\lib\site-packages\django\db\backends\utils.py utils.py utils execute 111: (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None
+DEBUG 2018-08-23 08:08:27,412 D:\wz_xsqd\venv\lib\site-packages\django\db\backends\utils.py utils.py utils execute 111: (0.003) SHOW FULL TABLES; args=None
+DEBUG 2018-08-23 08:08:27,425 D:\wz_xsqd\venv\lib\site-packages\django\db\backends\utils.py utils.py utils execute 111: (0.010) SELECT `django_migrations`.`app`, `django_migrations`.`name` FROM `django_migrations`; args=()
